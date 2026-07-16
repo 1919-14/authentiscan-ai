@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="page-head reveal">
+  <span class="eyebrow"><i data-lucide="bot"></i> AI Assistant</span>
+  <h1>Talk to the AuthentiScan assistant</h1>
+  <p>Ask about image forensics, deepfake detection{% if scan %}, or this specific scan result{% endif %}.</p>
+</div>
+
+<section class="section" style="padding-top:14px;">
+  <div class="container">
+
+    <div class="chat-shell reveal">
+      <div class="chat-header">
+        <span class="status-dot"></span>
+        <div>
+          <div class="ch-title">AuthentiScan Assistant</div>
+          <div class="ch-sub">DeepSeek V4 · via OpenCode Zen{% if scan %} · discussing scan {{ scan.id|truncatechars:8 }}{% endif %}</div>
+        </div>
+      </div>
+
+      <div class="chat-log" id="chat-log">
+        {% if not llm_configured %}
+          <div class="msg system-note"><i data-lucide="alert-triangle" style="width:13px;height:13px;vertical-align:-2px;"></i> No OPENCODE_API_KEY set — replies will explain how to enable the assistant.</div>
+        {% endif %}
+        {% if scan %}
+          <div class="msg system-note">Loaded context for scan {{ scan.id|truncatechars:8 }} — {{ scan.get_verdict_display }} ({{ scan.ai_likelihood }}%)</div>
+        {% endif %}
+        <div class="msg assistant">Hi! I'm the AuthentiScan assistant. Ask me how Error Level Analysis works, why an image got flagged, or anything about detecting AI-generated images.</div>
+      </div>
+
+      <form id="chat-form" class="chat-input-row" data-send-url="{% url 'chatbot:send_message_stream' session.id %}" style="display:none;">
+        {% csrf_token %}
+        <input type="text" id="chat-input" placeholder="Ask a question..." autocomplete="off" maxlength="2000" required>
+        <button type="submit" id="chat-send" aria-label="Send message"><i data-lucide="send"></i></button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}

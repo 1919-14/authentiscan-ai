@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ PROJECT_NAME }} — {{ PROJECT_TAGLINE }}{% endblock %}</title>
+  <meta name="description" content="AuthentiScan AI is a proof-of-human image authenticator that flags likely AI-generated or manipulated images using Error Level Analysis, noise-consistency checks, and metadata heuristics.">
+
+  <link rel="icon" href="{% static 'img/institute-logo.svg' %}" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="{% url 'core:landing' %}" class="brand">
+        <span class="brand-mark"><i data-lucide="scan-face"></i></span>
+        {{ PROJECT_NAME }}
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="{% url 'core:landing' %}#how-it-works">How it works</a></li>
+        <li><a href="{% url 'detector:upload' %}" class="{% if request.resolver_match.app_name == 'detector' %}active{% endif %}">Authenticator</a></li>
+        <li><a href="{% url 'chatbot:chat' %}" class="{% if request.resolver_match.app_name == 'chatbot' %}active{% endif %}">AI Assistant</a></li>
+        <li><a href="{% url 'core:about' %}">About</a></li>
+        <li><a href="{% url 'core:contributors' %}">Contributors</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="{% url 'detector:upload' %}" class="btn btn-primary">
+          <i data-lucide="shield-check"></i> Scan an Image
+        </a>
+        <button class="nav-toggle" aria-label="Toggle menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    {% if messages %}
+      <div class="container" style="padding-top:20px;">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h5>{{ PROJECT_NAME }}</h5>
+          <p style="color:rgba(255,255,255,0.65); font-size:0.9rem; max-width:340px;">
+            A lightweight, explainable forensic pipeline for flagging likely AI-generated
+            or manipulated images — built as a {{ COURSE_NAME }} project at {{ INSTITUTE_NAME }}.
+          </p>
+        </div>
+        <div>
+          <h5>Navigate</h5>
+          <ul>
+            <li><a href="{% url 'core:landing' %}">Home</a></li>
+            <li><a href="{% url 'detector:upload' %}">Authenticator</a></li>
+            <li><a href="{% url 'chatbot:chat' %}">AI Assistant</a></li>
+            <li><a href="{% url 'detector:history' %}">Scan history</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Project</h5>
+          <ul>
+            <li><a href="{% url 'core:about' %}">Methodology</a></li>
+            <li><a href="{% url 'core:contributors' %}">Contributors</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© {% now "Y" %} {{ PROJECT_NAME }} — {{ INSTITUTE_NAME }}</span>
+        <span>Academic submission · {{ COURSE_NAME }}</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

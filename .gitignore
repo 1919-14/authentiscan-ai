@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.pyc
+db.sqlite3
+/media/uploads/*
+/media/ela/*
+!/media/uploads/.gitkeep
+!/media/ela/.gitkeep
+/staticfiles/
+.venv/
+venv/
+*.egg-info/
+.DS_Store

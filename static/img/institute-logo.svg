@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#123a5c"/>
+      <stop offset="1" stop-color="#0f9d95"/>
+    </linearGradient>
+  </defs>
+  <path d="M60 6 L110 26 V56 C110 86 90 106 60 116 C30 106 10 86 10 56 V26 Z"
+        fill="url(#g1)" stroke="#0a2740" stroke-width="2"/>
+  <text x="60" y="58" font-family="Georgia, serif" font-size="26" font-weight="700"
+        fill="#ffffff" text-anchor="middle">IIST</text>
+  <text x="60" y="78" font-family="Arial, sans-serif" font-size="9" letter-spacing="1"
+        fill="#e3f6f4" text-anchor="middle">INDORE</text>
+</svg>

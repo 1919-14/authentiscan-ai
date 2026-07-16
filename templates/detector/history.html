@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-head reveal">
+  <span class="eyebrow"><i data-lucide="history"></i> History</span>
+  <h1>Scan history</h1>
+  <p>The last 50 authenticity scans run on this server.</p>
+</div>
+
+<section class="section" style="padding-top:14px;">
+  <div class="container" style="max-width:760px;">
+    {% if scans %}
+      <div class="scan-list reveal">
+        {% for s in scans %}
+          <a href="{% url 'detector:result' s.id %}" class="scan-row" style="text-decoration:none;">
+            <img src="{{ s.image.url }}" alt="">
+            <div>
+              <div style="font-weight:600;color:var(--ink);">{{ s.original_filename|truncatechars:32|default:"Untitled scan" }}</div>
+              <div style="font-size:0.8rem;color:var(--muted);">{{ s.created_at|date:"d M Y, H:i" }} · {{ s.ai_likelihood }}% likelihood</div>
+            </div>
+            <span class="badge {% if s.verdict == 'likely_human' %}human{% elif s.verdict == 'likely_ai' %}ai{% else %}uncertain{% endif %}">
+              {{ s.get_verdict_display }}
+            </span>
+            <i data-lucide="chevron-right" style="color:var(--muted);"></i>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card text-center reveal">
+        <p style="margin-bottom:16px;">No scans yet.</p>
+        <a href="{% url 'detector:upload' %}" class="btn btn-primary"><i data-lucide="upload-cloud"></i> Run your first scan</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

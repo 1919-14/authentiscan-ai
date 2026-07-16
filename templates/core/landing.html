@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow"><i data-lucide="radar"></i> Proof-of-Human Image Authenticator</span>
+      <h1>Is that photo real —<br>or <span class="accent-text">quietly synthetic?</span></h1>
+      <p class="hero-sub">
+        AuthentiScan AI runs every upload through Error Level Analysis, sensor-noise
+        consistency checks, and metadata forensics — then a DeepSeek-powered assistant
+        explains the verdict in plain English, no PhD required.
+      </p>
+      <div class="hero-actions">
+        <a href="{% url 'detector:upload' %}" class="btn btn-primary btn-lg">
+          <i data-lucide="upload-cloud"></i> Authenticate an Image
+        </a>
+        <a href="#how-it-works" class="btn btn-ghost btn-lg">
+          <i data-lucide="play-circle"></i> See how it works
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num">{{ stats.total_scans }}</div>
+          <div class="label">Images scanned</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">{{ stats.flagged_scans }}</div>
+          <div class="label">Flagged as suspicious</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num">3</div>
+          <div class="label">Forensic signals combined</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scan-visual reveal">
+      <div class="grid-overlay"></div>
+      <div class="face-outline">
+        <i data-lucide="scan-face"></i>
+      </div>
+      <div class="scanline"></div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+      <div class="readout">
+        <div class="rline"><span>ELA_VARIANCE</span><span class="ok">STABLE</span></div>
+        <div class="rline"><span>NOISE_UNIFORMITY</span><span class="ok">NATURAL</span></div>
+        <div class="rline"><span>EXIF_INTEGRITY</span><span class="ok">VERIFIED</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="how-it-works">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i data-lucide="layers"></i> The pipeline</span>
+      <h2>Three transparent, explainable checks — no black-box model</h2>
+      <p>Instead of a trained classifier, AuthentiScan AI combines lightweight, well-understood
+        forensic signals that anyone can inspect and reason about.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="icon-badge"><i data-lucide="grid-2x2"></i></div>
+        <h3>Error Level Analysis</h3>
+        <p>Re-compresses the image at a known JPEG quality and measures how unevenly each
+          region "moves" — edited or synthetic regions compress differently from a genuine capture.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="icon-badge"><i data-lucide="waves"></i></div>
+        <h3>Noise-Consistency Check</h3>
+        <p>Real camera sensors leave an organic, moderately-varying noise signature. Overly
+          uniform or "too clean" local variance is a soft signal of AI generation or heavy smoothing.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="icon-badge"><i data-lucide="file-search"></i></div>
+        <h3>EXIF Metadata Forensics</h3>
+        <p>Checks for genuine camera-capture fields (Make, Model, exposure) versus missing
+          metadata or software tags naming known generative-AI tools.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><i data-lucide="git-commit-horizontal"></i> From upload to verdict</span>
+      <h2>What happens when you scan an image</h2>
+    </div>
+
+    <div class="steps" style="max-width:760px;margin:0 auto;">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div><h4>Upload</h4><p>Drop in a JPEG, PNG, or WEBP image — no account required.</p></div>
+      </div>
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <div><h4>Forensic scan</h4><p>The server runs ELA, noise-uniformity, and EXIF analysis, producing three 0-100 suspicion scores.</p></div>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <div><h4>Composite verdict</h4><p>Scores are weighted into a single AI-generation likelihood, with an ELA heatmap you can inspect visually.</p></div>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-num">4</div>
+        <div><h4>Plain-English explanation</h4><p>DeepSeek (via OpenCode Zen) explains the result in a few honest sentences, and you can keep chatting about it.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container text-center reveal">
+    <h2>Ready to check your first image?</h2>
+    <p style="max-width:480px;margin:0 auto 26px;">Scans run entirely on this server — your image never
+      leaves the app except for the optional AI explanation request.</p>
+    <a href="{% url 'detector:upload' %}" class="btn btn-accent btn-lg">
+      <i data-lucide="scan-line"></i> Start a Scan
+    </a>
+  </div>
+</section>
+
+{% endblock %}

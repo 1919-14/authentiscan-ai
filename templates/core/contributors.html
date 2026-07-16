@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="page-head reveal">
+  <span class="eyebrow"><i data-lucide="users"></i> The team</span>
+  <h1>Contributors</h1>
+  <p>The students behind AuthentiScan AI.</p>
+</div>
+
+<section class="section" style="padding-top:20px;">
+  <div class="container">
+
+    <div class="institute-strip reveal">
+      <img src="{% static 'img/institute-logo.svg' %}" alt="{{ INSTITUTE_NAME }} logo">
+      <div>
+        <div class="it-name">{{ INSTITUTE_NAME }}</div>
+        <div class="it-course">{{ COURSE_NAME }}</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      {% for c in contributors %}
+        <div class="contributor-card reveal reveal-delay-{{ forloop.counter0 }} {% if forloop.first %}lead{% endif %}">
+          {% if forloop.first %}
+            <span class="lead-tag"><i data-lucide="star"></i> Team Lead</span>
+          {% endif %}
+          <div class="avatar-ring">{{ c.initials }}</div>
+          <h3>{{ c.name }}</h3>
+          <div class="role">{{ c.role }}</div>
+          <span class="enroll">Enrollment: {{ c.enrollment }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="card reveal" style="margin-top:36px; text-align:center;">
+      <h3 style="margin-bottom:6px;">About this submission</h3>
+      <p style="margin-bottom:0;">AuthentiScan AI was built as a {{ COURSE_NAME }} project at
+        {{ INSTITUTE_NAME }}, combining classical image-forensics techniques (Error Level
+        Analysis, noise-consistency checks, EXIF forensics) with an LLM-generated natural
+        language explanation layer and interactive assistant powered by DeepSeek via OpenCode Zen.</p>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

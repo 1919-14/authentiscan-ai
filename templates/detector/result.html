@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-head reveal">
+  <span class="eyebrow"><i data-lucide="file-check-2"></i> Scan Result</span>
+  <h1>Authenticity report</h1>
+  <p class="mono" style="color:var(--muted);font-size:0.85rem;">Scan ID: {{ scan.id }} · {{ scan.created_at|date:"d M Y, H:i" }}</p>
+</div>
+
+<section class="section" style="padding-top:10px;">
+  <div class="container">
+
+    <div class="verdict-banner reveal
+      {% if scan.verdict == 'likely_human' %}human{% elif scan.verdict == 'likely_ai' %}ai{% else %}uncertain{% endif %}">
+      {% if scan.verdict == 'likely_human' %}
+        <i data-lucide="badge-check" class="v-icon"></i>
+      {% elif scan.verdict == 'likely_ai' %}
+        <i data-lucide="alert-triangle" class="v-icon"></i>
+      {% else %}
+        <i data-lucide="help-circle" class="v-icon"></i>
+      {% endif %}
+      <div>
+        <h3>{{ scan.get_verdict_display }}</h3>
+        <p>Confidence in this read: {{ scan.confidence_label }} · AI-generation likelihood {{ scan.ai_likelihood }}%</p>
+      </div>
+    </div>
+
+    <div class="result-grid">
+
+      <div class="reveal">
+        <div class="image-pane" style="margin-bottom:20px;">
+          <div class="pane-label"><i data-lucide="image" style="width:14px;height:14px;"></i> Original upload</div>
+          <img src="{{ scan.image.url }}" alt="Uploaded image">
+        </div>
+        {% if scan.ela_heatmap %}
+        <div class="image-pane">
+          <div class="pane-label"><i data-lucide="grid-2x2" style="width:14px;height:14px;"></i> ELA heatmap (amplified)</div>
+          <img src="{{ scan.ela_heatmap.url }}" alt="Error Level Analysis heatmap">
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="reveal reveal-delay-1">
+
+        <div class="likelihood-meter">
+          <div class="lm-top">
+            <span>Authentic</span>
+            <span>AI-Generated</span>
+          </div>
+          <div class="lm-track">
+            <div class="lm-fill" data-fill-width="{{ scan.ai_likelihood }}" style="width:0%;"></div>
+          </div>
+        </div>
+
+        <div class="score-list">
+          <div class="score-row">
+            <span>ELA suspicion</span>
+            <div class="track"><div class="bar" data-fill-width="{{ scan.ela_score }}" style="width:0%;"></div></div>
+            <span class="val">{{ scan.ela_score }}</span>
+          </div>
+          <div class="score-row">
+            <span>Noise uniformity</span>
+            <div class="track"><div class="bar" data-fill-width="{{ scan.noise_score }}" style="width:0%;"></div></div>
+            <span class="val">{{ scan.noise_score }}</span>
+          </div>
+          <div class="score-row">
+            <span>Metadata signal</span>
+            <div class="track"><div class="bar" data-fill-width="{{ scan.metadata_score }}" style="width:0%;"></div></div>
+            <span class="val">{{ scan.metadata_score }}</span>
+          </div>
+        </div>
+
+        <div class="explanation-box">
+          <div class="eb-head">
+            <i data-lucide="sparkles"></i>
+            <h4>AI-generated explanation (DeepSeek via OpenCode Zen)</h4>
+          </div>
+          <p style="margin-bottom:0;white-space:pre-wrap;">{{ scan.explanation_text }}</p>
+        </div>
+
+        <details style="margin-top:18px;">
+          <summary style="cursor:pointer;color:var(--muted);font-size:0.85rem;">Raw metadata &amp; EXIF details</summary>
+          <table class="meta-table">
+            <tr><td>Dimensions</td><td>{{ scan.metadata_json.dimensions }}</td></tr>
+            <tr><td>Format</td><td>{{ scan.metadata_json.format }}</td></tr>
+            <tr><td>EXIF tags found</td><td>{{ scan.metadata_json.exif_tag_count }}</td></tr>
+            <tr><td>Metadata note</td><td>{{ scan.metadata_json.metadata_reason }}</td></tr>
+            <tr><td>ELA mean diff</td><td>{{ scan.metadata_json.raw_scores.ela_mean_diff }}</td></tr>
+            <tr><td>ELA std diff</td><td>{{ scan.metadata_json.raw_scores.ela_std_diff }}</td></tr>
+            <tr><td>ELA max diff</td><td>{{ scan.metadata_json.raw_scores.ela_max_diff }}</td></tr>
+          </table>
+        </details>
+
+        <div class="hero-actions" style="margin-top:26px;">
+          <a href="{% url 'chatbot:chat' %}?scan={{ scan.id }}" class="btn btn-accent">
+            <i data-lucide="message-circle"></i> Discuss this result
+          </a>
+          <a href="{% url 'detector:upload' %}" class="btn btn-ghost">
+            <i data-lucide="rotate-ccw"></i> Scan another
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

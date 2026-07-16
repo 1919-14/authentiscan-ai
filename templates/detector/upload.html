@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-head reveal">
+  <span class="eyebrow"><i data-lucide="shield-check"></i> Authenticator</span>
+  <h1>Authenticate an image</h1>
+  <p>Upload a photo to check for signs of AI generation or manipulation.</p>
+</div>
+
+<section class="section" style="padding-top:24px;">
+  <div class="container">
+
+    <form method="post" enctype="multipart/form-data" class="upload-card reveal">
+      {% csrf_token %}
+
+      <label class="dropzone" data-dropzone>
+        <i data-lucide="upload-cloud"></i>
+        <div><strong>Click to upload</strong> or drag and drop</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:6px;">JPEG, PNG, or WEBP — up to 10 MB</div>
+        <div class="dz-filename" style="display:none;"></div>
+        {{ form.image }}
+      </label>
+
+      {% if form.image.errors %}
+        <div class="field-errors">{{ form.image.errors|striptags }}</div>
+      {% endif %}
+      {% if form.non_field_errors %}
+        <div class="field-errors">{{ form.non_field_errors|striptags }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:22px;">
+        <i data-lucide="scan-line"></i> Run Authenticity Scan
+      </button>
+    </form>
+
+    {% if recent_scans %}
+      <div style="max-width:640px;margin:44px auto 0;">
+        <h4 style="text-align:center;color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.06em;">Recent scans</h4>
+        <div class="scan-list reveal">
+          {% for s in recent_scans %}
+            <a href="{% url 'detector:result' s.id %}" class="scan-row" style="text-decoration:none;">
+              <img src="{{ s.image.url }}" alt="">
+              <div>
+                <div style="font-weight:600;color:var(--ink);">{{ s.original_filename|truncatechars:28|default:"Untitled scan" }}</div>
+                <div style="font-size:0.8rem;color:var(--muted);">{{ s.created_at|timesince }} ago</div>
+              </div>
+              <span class="badge {% if s.verdict == 'likely_human' %}human{% elif s.verdict == 'likely_ai' %}ai{% else %}uncertain{% endif %}">
+                {{ s.get_verdict_display }}
+              </span>
+              <i data-lucide="chevron-right" style="color:var(--muted);"></i>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
