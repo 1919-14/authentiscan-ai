@@ -51,13 +51,24 @@ def upload(request):
 def result(request, scan_id):
     scan = get_object_or_404(ScanResult, id=scan_id)
 
-    if not scan.explanation_generated:
+    if _needs_explanation(scan):
         _generate_explanation(scan)
 
     return render(request, "detector/result.html", {
         "scan": scan,
         "llm_configured": is_configured(),
     })
+
+
+def _needs_explanation(scan: ScanResult) -> bool:
+    text = (scan.explanation_text or "").strip()
+    if not scan.explanation_generated or not text:
+        return True
+    if text.startswith("Could not generate an AI explanation right now"):
+        return True
+    if is_configured() and text.startswith("AI-generated explanations are disabled"):
+        return True
+    return False
 
 
 def _generate_explanation(scan: ScanResult):
@@ -78,7 +89,8 @@ def _generate_explanation(scan: ScanResult):
         "AuthentiScan AI. Explain the following automated image-authenticity scan "
         "result to a non-technical user in 4-6 short sentences. Be balanced, avoid "
         "overclaiming certainty, and mention this is a heuristic first-pass triage, "
-        "not a legal or forensic-grade determination.\n\n"
+        "not a legal or forensic-grade determination. Use plain text only, without "
+        "Markdown formatting.\n\n"
         f"Verdict: {scan.get_verdict_display()}\n"
         f"Overall AI-generation likelihood: {scan.ai_likelihood}%\n"
         f"Error Level Analysis suspicion score: {scan.ela_score}/100 "
@@ -97,7 +109,7 @@ def _generate_explanation(scan: ScanResult):
                 {"role": "user", "content": prompt},
             ],
             temperature=0.4,
-            max_tokens=400,
+            max_tokens=2000,
         )
     except (LLMConfigurationError, LLMRequestError) as exc:
         explanation = (

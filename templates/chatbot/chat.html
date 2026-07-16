@@ -30,7 +30,7 @@
         <div class="msg assistant">Hi! I'm the AuthentiScan assistant. Ask me how Error Level Analysis works, why an image got flagged, or anything about detecting AI-generated images.</div>
       </div>
 
-      <form id="chat-form" class="chat-input-row" data-send-url="{% url 'chatbot:send_message_stream' session.id %}" style="display:none;">
+      <form id="chat-form" class="chat-input-row" data-send-url="{% url 'chatbot:send_message' session.id %}" style="display:none;">
         {% csrf_token %}
         <input type="text" id="chat-input" placeholder="Ask a question..." autocomplete="off" maxlength="2000" required>
         <button type="submit" id="chat-send" aria-label="Send message"><i data-lucide="send"></i></button>

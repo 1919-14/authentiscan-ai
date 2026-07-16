@@ -63,7 +63,10 @@ def chat_completion(messages, temperature: float = 0.4, max_tokens: int = 700) -
         )
         response.raise_for_status()
         data = response.json()
-        return data["choices"][0]["message"]["content"].strip()
+        content = (data["choices"][0]["message"].get("content") or "").strip()
+        if not content:
+            raise LLMRequestError("The LLM provider returned an empty response.")
+        return content
     except requests.exceptions.RequestException as exc:
         logger.exception("LLM request failed")
         raise LLMRequestError(f"Could not reach the LLM provider: {exc}") from exc

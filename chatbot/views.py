@@ -80,7 +80,7 @@ def send_message(request, session_id):
     messages = _build_messages(session)
 
     try:
-        reply = chat_completion(messages=messages, temperature=0.5, max_tokens=500)
+        reply = chat_completion(messages=messages, temperature=0.5, max_tokens=2000)
     except (LLMConfigurationError, LLMRequestError) as exc:
         reply = (
             "I can't reach the AI assistant right now. "
